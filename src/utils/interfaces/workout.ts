@@ -5,9 +5,11 @@ export interface Set {
 }
 
 export interface WorkoutRecord {
-  id: number;
-  userId: number;
-  exercise: string;
-  sets: Set[];
   date: string;
+  exercise: string;
+  reps: number;
+  setNumber: number;
+  weight: number;
+  workoutId: number;
+  sets: Set[];
 }

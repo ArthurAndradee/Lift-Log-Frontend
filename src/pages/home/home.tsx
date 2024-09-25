@@ -43,6 +43,33 @@ function Home() {
       console.error('Registration failed');
     }
   };
+  
+  const fetchPreviousRecords = () => {
+    axios.get(`http://localhost:5000/api/workouts/records/${userId}/${selectedExercise}`)
+    .then(response => {
+      setPreviousRecords(response.data);
+      console.log(response.data);
+      console.log(previousRecords)
+    })
+    .catch(err => {
+      console.error('Error fetching previous records:', err);
+    });
+  };
+  
+  const addSet = () => {
+    if (setWeight > 0 && setReps > 0) {
+      const newSet: Set = {
+        setNumber: sets.length + 1,
+        weight: setWeight,
+        reps: setReps,
+      };
+      setSets([...sets, newSet]);
+      setSetWeight(0);
+      setSetReps(0);
+    } else {
+      alert('Please enter valid weight and reps for the set.');
+    }
+  };
 
   const logWorkout = async () => {
     try {
@@ -50,38 +77,12 @@ function Home() {
       alert('Workout logged');
       setExercise('');
       setSets([]);
-      setSetWeight(0);
+      setSetWeight(0); 
+      setSetReps(0);
     } catch (err) {
       console.error('Failed to log workout');
     }
   };
-
-  const fetchPreviousRecords = () => {
-    axios.get(`http://localhost:5000/api/workouts/records/${userId}/${selectedExercise}`)
-      .then(response => {
-        setPreviousRecords(response.data.records);
-      })
-      .catch(err => {
-        console.error('Error fetching previous records:', err);
-      });
-  };
-
-  const addSet = () => {
-    if (setWeight > 0 && setReps > 0) {
-      const newSet: Set = {
-        setNumber: sets.length + 1,
-        reps: Number(setReps),
-        weight: Number(setWeight),
-      };
-      setSets([...sets, newSet]);
-      setSetWeight(0); 
-      setSetReps(0);
-    } else {
-      alert('Please enter valid values for weight and reps.');
-    }
-  };
-
-  console.log(previousRecords)
 
   return (
     <div>
@@ -105,6 +106,43 @@ function Home() {
 
       {userId && (
         <div>
+          <h2>Log Workout</h2>
+          <input
+            type="text"
+            value={exercise}
+            onChange={(e) => setExercise(e.target.value)}
+            placeholder="Exercise"
+            />
+          <label>Weight</label>
+          <input
+            type="number"
+            value={setWeight}
+            onChange={(e) => setSetWeight(Number(e.target.value))}
+            placeholder="Weight"
+          />
+          <label>Reps</label>
+          <input
+            type="number"
+            value={setReps}
+            onChange={(e) => setSetReps(Number(e.target.value))}
+            placeholder="Reps"
+          />
+          <button onClick={addSet}>Add Set</button>
+          <button onClick={logWorkout}>Log Workout</button>
+
+          <h3>Current Sets</h3>
+          <ul>
+            {sets.map((set) => (
+              <li key={set.setNumber}>
+                Set {set.setNumber}: {set.weight} lbs, {set.reps} reps
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+  
+      {userId && (
+        <div>
           <h2>Search Previous Workout Records</h2>
           <select
             value={selectedExercise}
@@ -122,44 +160,30 @@ function Home() {
           </button>
 
           <h3>Previous Records</h3>
-          {/* {previousRecords.length > 0 ? (
+          {previousRecords.length > 0 ? (
             <ul>
-              {previousRecords.map((record) => (
-                <li key={record.id}>
-                  {record.exercise} - {record.sets.length} sets logged on {new Date(record.date).toLocaleString()}
-                  <ul>
-                    {record.sets.map(set => (
-                      <li key={set.setNumber}>
-                        Set {set.setNumber}: {set.weight} lbs for {set.reps} reps
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
+        <h2>Previous Records</h2>
+        {previousRecords && previousRecords.length > 0 ? (
+          <ul>
+            {previousRecords.map((record) => (
+              <li key={record.workoutId}>
+                <strong>{record.exercise}</strong> - Set {record.setNumber}, 
+                Weight: {record.weight} lbs, 
+                {record.reps !== null ? ` Reps: ${record.reps}` : ' Reps: N/A'}
+                <br />
+                Logged on: {new Date(record.date).toLocaleString()}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No records available for this exercise.</p>
+        )}
             </ul>
           ) : (
             <p>No records found for this exercise.</p>
-          )} */}
+          )}
         </div>
       )}
-
-      <div>
-        <h2>Previous Records</h2>
-        <ul>
-          {/* {previousRecords.map((record) => (
-            <li key={record.id}>
-              {record.exercise} - {record.sets.length} sets logged on {new Date(record.date).toLocaleString()}
-              <ul>
-                {record.sets.map(set => (
-                  <li key={set.setNumber}>
-                    Set {set.setNumber}: {set.weight} lbs for {set.reps} reps
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))} */}
-        </ul>
-      </div>
     </div>
   );
 };
