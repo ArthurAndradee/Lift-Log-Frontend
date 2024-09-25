@@ -24,7 +24,7 @@ function Home() {
           console.error('Error fetching exercises:', err);
         });
     }
-  }, [userId]);
+  }, [userId, previousRecords]);
 
   const handleLogin = async () => {
     try {
@@ -43,19 +43,27 @@ function Home() {
       console.error('Registration failed');
     }
   };
-  
-  const fetchPreviousRecords = () => {
-    axios.get(`http://localhost:5000/api/workouts/records/${userId}/${selectedExercise}`)
-    .then(response => {
-      setPreviousRecords(response.data);
-      console.log(response.data);
-      console.log(previousRecords)
-    })
-    .catch(err => {
-      console.error('Error fetching previous records:', err);
-    });
+
+
+  const fetchPreviousRecords = (exercise: string) => {
+    axios.get(`http://localhost:5000/api/workouts/records/${userId}/${exercise}`)
+      .then(response => {
+        setPreviousRecords(response.data);
+      })
+      .catch(err => {
+        console.error('Error fetching previous records:', err);
+      });
   };
-  
+
+  const handleExerciseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newExercise = e.target.value;
+    setSelectedExercise(newExercise);
+    setPreviousRecords([]);
+    if (newExercise) {
+      fetchPreviousRecords(newExercise);
+    }
+  };
+
   const addSet = () => {
     if (setWeight > 0 && setReps > 0) {
       const newSet: Set = {
@@ -75,6 +83,10 @@ function Home() {
     try {
       await axios.post('http://localhost:5000/api/workouts/log', { userId, exercise, sets });
       alert('Workout logged');
+
+
+      fetchPreviousRecords(selectedExercise); 
+
       setExercise('');
       setSets([]);
       setSetWeight(0); 
@@ -112,7 +124,7 @@ function Home() {
             value={exercise}
             onChange={(e) => setExercise(e.target.value)}
             placeholder="Exercise"
-            />
+          />
           <label>Weight</label>
           <input
             type="number"
@@ -140,13 +152,13 @@ function Home() {
           </ul>
         </div>
       )}
-  
+
       {userId && (
         <div>
           <h2>Search Previous Workout Records</h2>
           <select
             value={selectedExercise}
-            onChange={(e) => setSelectedExercise(e.target.value)}
+            onChange={handleExerciseChange}
           >
             <option value="">Select an exercise</option>
             {availableExercises.map((exercise, index) => (
@@ -155,38 +167,29 @@ function Home() {
               </option>
             ))}
           </select>
-          <button onClick={fetchPreviousRecords} disabled={!selectedExercise}>
-            Search Records
-          </button>
 
-          <h3>Previous Records</h3>
-          {previousRecords.length > 0 ? (
-            <ul>
-        <h2>Previous Records</h2>
-        {previousRecords && previousRecords.length > 0 ? (
-          <ul>
-            {previousRecords.map((record) => (
-              <li key={record.workoutId}>
-                <strong>{record.exercise}</strong> - Set {record.setNumber}, 
-                Weight: {record.weight} lbs, 
-                {record.reps !== null ? ` Reps: ${record.reps}` : ' Reps: N/A'}
-                <br />
-                Logged on: {new Date(record.date).toLocaleString()}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No records available for this exercise.</p>
-        )}
-            </ul>
-          ) : (
-            <p>No records found for this exercise.</p>
-          )}
+          <div>
+            <h2>Previous Records</h2>
+            {previousRecords && previousRecords.length > 0 ? (
+              <ul>
+                {previousRecords.map((record) => (
+                  <li key={record.workoutId}>
+                    <strong>{record.exercise}</strong> - Set {record.setNumber}, 
+                    Weight: {record.weight} lbs, 
+                    {record.reps !== null ? ` Reps: ${record.reps}` : ' Reps: N/A'}
+                    <br />
+                    Logged on: {new Date(record.date).toLocaleString()}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No records available for this exercise.</p>
+            )}
+          </div>
         </div>
       )}
     </div>
   );
 };
-
 
 export default Home;
