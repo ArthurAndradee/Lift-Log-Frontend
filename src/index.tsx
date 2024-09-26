@@ -15,11 +15,11 @@ const App = () => {
 
   const router = createBrowserRouter([
     {
-      path: '/auth',
+      path: '/',
       element: <UserAuth setUserId={setUserId} />
     },
     {
-      path:'/',
+      path:'/home',
       element: <Home />
     },
     {
