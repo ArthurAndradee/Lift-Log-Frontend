@@ -72,7 +72,7 @@ function LogWorkout(props: LogWorkoutProps) {
       <ul>
         {sets.map((set) => (
           <li key={set.setNumber}>
-            Set {set.setNumber}: {set.weight} kgs, {set.reps} reps
+            Série {set.setNumber}: {set.weight} kgs, {set.reps} repetições
           </li>
         ))}
       </ul>
