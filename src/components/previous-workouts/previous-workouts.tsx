@@ -25,7 +25,6 @@ function PreviousRecords(props: PreviousRecordsProps) {
   useEffect(() => {
     setPreviousRecords([]); 
     fetchPreviousRecords(selectedExercise);
-    setPreviousRecords([]); 
   }, [selectedExercise]);
   
   const fetchPreviousRecords = (exercise: string) => {
@@ -61,11 +60,11 @@ function PreviousRecords(props: PreviousRecordsProps) {
         <ul>
           {previousRecords.map((record) => (
             <li key={record.workoutId}>
-              <strong>{record.exercise}</strong> - Set {record.setNumber}, 
-              Weight: {record.weight} lbs, 
-              {record.reps !== null ? ` Reps: ${record.reps}` : ' Reps: N/A'}
+              <strong>{record.exercise}</strong> - Série {record.setNumber}, 
+              Weight: {record.weight} kgs, 
+              {record.reps !== null ? ` Repetições: ${record.reps}` : ' Repetições: N/A'}
               <br />
-              Logged on: {new Date(record.date).toLocaleString()}
+              Registrado: {new Date(record.date).toLocaleString()}
             </li>
           ))}
         </ul>
