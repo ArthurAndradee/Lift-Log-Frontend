@@ -1,15 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import Home from './pages/home/home';
 import './index.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import LogWorkout from './components/log-form/log-form';
+import PreviousRecords from './components/previous-workouts/previous-workouts';
+import UserAuth from './components/user-auth/user-auth';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
+const App = () => {
+  const [userId, setUserId] = useState<number | null>(null);
+
+  const router = createBrowserRouter([
+    {
+      path: '/auth',
+      element: <UserAuth setUserId={setUserId} />
+    },
+    {
+      path:'/',
+      element: <Home />
+    },
+    {
+      path: '/log-workout',
+      element: <LogWorkout userId={userId} fetchPreviousRecords={() => {}} />
+    },
+    {
+      path: '/previous-records',
+      element: <PreviousRecords userId={userId} />
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
+};
+
 root.render(
   <React.StrictMode>
-      <Home />
+      <App />
   </React.StrictMode>
 );
 
