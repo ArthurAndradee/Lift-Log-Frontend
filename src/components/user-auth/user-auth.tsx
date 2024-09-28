@@ -30,7 +30,7 @@ function UserAuth(props: UserAuthProps) {
 
   return (
     <div>
-      <h2>Login / Register</h2>
+      <h2>Acessar / Criar conta</h2>
       <input
         type="text"
         value={username}
@@ -43,8 +43,8 @@ function UserAuth(props: UserAuthProps) {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleRegister}>Register</button>
+      <button onClick={handleLogin}>Acessar</button>
+      <button onClick={handleRegister}>Criar conta</button>
     </div>
   );
 };

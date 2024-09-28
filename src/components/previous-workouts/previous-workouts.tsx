@@ -45,9 +45,9 @@ function PreviousRecords(props: PreviousRecordsProps) {
 
   return (
     <div>
-      <h2>Search Previous Workout Records</h2>
+      <h2>Pesquise por treinos anteriores</h2>
       <select value={selectedExercise} onChange={handleExerciseChange}>
-        <option value="">Select an exercise</option>
+        <option value="">Selecione um exercício</option>
         {availableExercises.map((exercise, index) => (
           <option key={index} value={exercise}>
             {exercise}
@@ -55,13 +55,15 @@ function PreviousRecords(props: PreviousRecordsProps) {
         ))}
       </select>
 
-      <h2>Previous Records</h2>
+      <h2>Registros anteriores
+
+      </h2>
       {previousRecords.length > 0 ? (
         <ul>
           {previousRecords.map((record) => (
             <li key={record.workoutId}>
               <strong>{record.exercise}</strong> - Série {record.setNumber}, 
-              Weight: {record.weight} kgs, 
+              Peso: {record.weight} kgs, 
               {record.reps !== null ? ` Repetições: ${record.reps}` : ' Repetições: N/A'}
               <br />
               Registrado: {new Date(record.date).toLocaleString()}
@@ -69,7 +71,7 @@ function PreviousRecords(props: PreviousRecordsProps) {
           ))}
         </ul>
       ) : (
-        <p>No records available for this exercise.</p>
+        <p>Registros não encontrados para esse exercício.</p>
       )}
     </div>
   );

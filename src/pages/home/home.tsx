@@ -5,8 +5,8 @@ function Home() {
 
   return (
     <div>
-      <Link to={'/log-workout'}>Log Workout</Link>
-      <Link to={'/previous-records'}>Previous Records</Link>
+      <Link to={'/log-workout'}>Registrar treino</Link>
+      <Link to={'/previous-records'}>Registros anteriores</Link>
     </div>
   );
 }
