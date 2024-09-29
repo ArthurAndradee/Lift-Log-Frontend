@@ -94,7 +94,7 @@ function LogWorkout(props: LogWorkoutProps) {
         onChange={(e) => setSetReps(Number(e.target.value))}
         placeholder="Reps"
       />
-      <button onClick={addSet}>Adicioanr séries</button>
+      <button onClick={addSet}>Adicionar séries</button>
       <button onClick={logWorkout}>Registrar exercício</button>
 
       <h3>Série atual:</h3>
