@@ -10,3 +10,8 @@ export interface LogWorkoutProps {
 export interface PreviousRecordsProps {
     userId: number | null;
 }
+
+export interface CreateExerciseProps {
+    onAdd: (exercise: string) => void;
+  }
+  

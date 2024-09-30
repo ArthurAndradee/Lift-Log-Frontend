@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { PreviousRecordsProps } from '../../utils/interfaces/component-props';
@@ -38,7 +37,20 @@ function PreviousRecords(props: PreviousRecordsProps) {
         });
     }
   };
-  
+
+  const deleteWorkout = async (workoutId: number) => {
+    try {
+      await axios.delete('http://localhost:5000/api/workouts/delete', {
+        data: { userId: props.userId, workoutId }
+      });
+      alert('Workout deleted successfully');
+      fetchPreviousRecords(selectedExercise); // Refresh records
+    } catch (err) {
+      console.error('Error deleting workout:', err);
+      alert('Failed to delete workout');
+    }
+  };
+
   const handleExerciseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedExercise(e.target.value);
   };
@@ -55,18 +67,17 @@ function PreviousRecords(props: PreviousRecordsProps) {
         ))}
       </select>
 
-      <h2>Registros anteriores
-
-      </h2>
+      <h2>Registros anteriores</h2>
       {previousRecords.length > 0 ? (
         <ul>
           {previousRecords.map((record) => (
-            <li key={record.workoutId}>
+            <li>
               <strong>{record.exercise}</strong> - Série {record.setNumber}, 
               Peso: {record.weight} kgs, 
               {record.reps !== null ? ` Repetições: ${record.reps}` : ' Repetições: N/A'}
               <br />
               Registrado: {new Date(record.date).toLocaleString()}
+              <button onClick={() => deleteWorkout(record.workoutId)}>Deletar</button>
             </li>
           ))}
         </ul>

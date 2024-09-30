@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import Home from './pages/home/home';
-import './index.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LogWorkout from './pages/log-form/log-form';
 import PreviousRecords from './pages/previous-workouts/previous-workouts';
 import UserAuth from './pages/user-auth/user-auth';
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -28,10 +28,6 @@ const App = () => {
     },
     {
       path: '/previous-records',
-      element: <PreviousRecords userId={userId} />
-    },
-    {
-      path: '/create-exericse',
       element: <PreviousRecords userId={userId} />
     },
   ]);
