@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import Home from './pages/home/home';
-import LogWorkout from './pages/log-form/log-form';
 import PreviousRecords from './pages/previous-workouts/previous-workouts';
 import UserAuth from './pages/user-auth/user-auth';
+import CreateExercise from './pages/create-exercise/create-exercise';
+import LogExercise from './pages/log-exercise/log-exercise';
+import Welcome from './pages/welcome/welcome';
+import WorkoutContainer from './pages/workout-container/workout-container';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -19,12 +21,20 @@ const App = () => {
       element: <UserAuth setUserId={setUserId} />
     },
     {
-      path:'/home',
-      element: <Home />
+      path:'/welcome',
+      element: <Welcome />
     },
     {
-      path: '/log-workout',
-      element: <LogWorkout userId={userId} fetchPreviousRecords={() => {}} />
+      path:'/workout-container',
+      element: <WorkoutContainer />
+    },
+    {
+      path: '/log-new',
+      element: <CreateExercise userId={userId} fetchPreviousRecords={() => {}} />
+    },
+    {
+      path: '/log-existing',
+      element: <LogExercise userId={userId} fetchPreviousRecords={() => {}}/>
     },
     {
       path: '/previous-records',

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { UserAuthProps } from '../../utils/interfaces/component-props';
-import './user-auth.css'
 import { useNavigate } from 'react-router-dom';
+import './user-auth.css'
 
 function UserAuth(props: UserAuthProps) {
   const [username, setUsername] = useState('');
@@ -13,7 +13,7 @@ function UserAuth(props: UserAuthProps) {
     try {
       const res = await axios.post('http://localhost:5000/api/users/login', { username, password });
       props.setUserId(res.data.userId);
-      navigate('/home')
+      navigate('/welcome')
     } catch (err) {
       console.error('Login failed');
     }

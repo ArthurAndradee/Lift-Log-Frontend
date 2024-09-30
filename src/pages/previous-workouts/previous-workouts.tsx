@@ -5,9 +5,11 @@ import { WorkoutRecord } from '../../utils/interfaces/workout';
 import './previous-workouts.css';
 
 function PreviousRecords(props: PreviousRecordsProps) {
-  const [selectedExercise, setSelectedExercise] = useState<string>('');
   const [availableExercises, setAvailableExercises] = useState<string[]>([]);
-  const [previousRecords, setPreviousRecords] = useState<WorkoutRecord[]>([]);
+  const [activeRecordExercise, setActiveRecordExercise] = useState<string>('');
+  const [previousRecord, setPreviousRecord] = useState<WorkoutRecord[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
 
   useEffect(() => {
     if (props.userId) {
@@ -22,15 +24,17 @@ function PreviousRecords(props: PreviousRecordsProps) {
   }, [props.userId]);
   
   useEffect(() => {
-    setPreviousRecords([]); 
-    fetchPreviousRecords(selectedExercise);
-  }, [selectedExercise]);
+    const filtered = availableExercises.filter(exercise =>
+      exercise.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredExercises(filtered);
+  }, [searchQuery, availableExercises]);
   
-  const fetchPreviousRecords = (exercise: string) => {
+  const fetchPreviousRecord = (exercise: string) => {
     if (props.userId) {
       axios.get(`http://localhost:5000/api/workouts/records/${props.userId}/${exercise}`)
         .then(response => {
-          setPreviousRecords(response.data);
+          setPreviousRecord(response.data);
         })
         .catch(err => {
           console.error('Error fetching previous records:', err);
@@ -44,33 +48,45 @@ function PreviousRecords(props: PreviousRecordsProps) {
         data: { userId: props.userId, workoutId }
       });
       alert('Workout deleted successfully');
-      fetchPreviousRecords(selectedExercise); // Refresh records
+      fetchPreviousRecord(activeRecordExercise)
     } catch (err) {
       console.error('Error deleting workout:', err);
       alert('Failed to delete workout');
     }
   };
 
-  const handleExerciseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedExercise(e.target.value);
+  const handleExerciseSelection = (exercise: string) => {
+    fetchPreviousRecord(exercise);
+    setActiveRecordExercise(exercise)
   };
 
   return (
     <div>
       <h2>Pesquise por treinos anteriores</h2>
-      <select value={selectedExercise} onChange={handleExerciseChange}>
-        <option value="">Selecione um exercício</option>
-        {availableExercises.map((exercise, index) => (
-          <option key={index} value={exercise}>
-            {exercise}
-          </option>
-        ))}
-      </select>
+
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search for an exercise"
+      />
+
+      <ul>
+        {filteredExercises.length > 0 ? (
+          filteredExercises.map((exercise, index) => (
+            <li key={index} onClick={() => handleExerciseSelection(exercise)}>
+              {exercise}
+            </li>
+          ))
+        ) : (
+          <li>No exercises found.</li>
+        )}
+      </ul>
 
       <h2>Registros anteriores</h2>
-      {previousRecords.length > 0 ? (
+      {previousRecord.length > 0 ? (
         <ul>
-          {previousRecords.map((record) => (
+          {previousRecord.map((record) => (
             <li>
               <strong>{record.exercise}</strong> - Série {record.setNumber}, 
               Peso: {record.weight} kgs, 
