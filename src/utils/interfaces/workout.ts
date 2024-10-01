@@ -13,8 +13,3 @@ export interface WorkoutRecord {
   workoutId: number;
   sets: Set[];
 }
-
-export interface LogWorkoutProps {
-  userId: number | null;
-  fetchPreviousRecords: (exercise: string) => void;
-}

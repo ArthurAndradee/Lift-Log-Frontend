@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
@@ -13,12 +13,10 @@ import './index.css';
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 const App = () => {
-  const [userId, setUserId] = useState<number | null>(null);
-
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <UserAuth setUserId={setUserId} />
+      element: <UserAuth />
     },
     {
       path:'/welcome',
