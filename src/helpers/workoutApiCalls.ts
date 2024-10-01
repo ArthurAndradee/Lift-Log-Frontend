@@ -33,7 +33,6 @@ export const addSet = (sets: Set[], setWeight: number, setReps: number, setSets:
 
 export const logWorkout = async ( userId: number | null, exercise: string, sets: Set[]) => {
   if (userId && exercise) {
-
     if (!token) {
       alert('User is not authenticated.');
       return { logged: false };

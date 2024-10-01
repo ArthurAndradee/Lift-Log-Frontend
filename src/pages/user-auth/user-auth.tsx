@@ -20,6 +20,7 @@ function UserAuth() {
       const res = await axios.post('http://localhost:5000/api/users/login', { username, password });
       
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userId', res.data.userId);
       console.log(res.data.token);
 
       navigate('/welcome');
