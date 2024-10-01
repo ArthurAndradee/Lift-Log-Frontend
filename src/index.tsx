@@ -30,15 +30,15 @@ const App = () => {
     },
     {
       path: '/log-new',
-      element: <CreateExercise userId={userId} fetchPreviousRecords={() => {}} />
+      element: <CreateExercise />
     },
     {
       path: '/log-existing',
-      element: <LogExercise userId={userId} fetchPreviousRecords={() => {}}/>
+      element: <LogExercise />
     },
     {
       path: '/previous-records',
-      element: <PreviousRecords userId={userId} />
+      element: <PreviousRecords />
     },
   ]);
 

@@ -1,13 +1,26 @@
-import { useState } from 'react';
-import { LogWorkoutProps, Set } from '../../utils/interfaces/workout';
+import { useEffect, useState } from 'react';
+import { Set } from '../../utils/interfaces/workout';
 import { addSet, logWorkout } from '../../helpers/workoutApiCalls'; 
 import './create-exercise.css';
 
-function CreateExercise(props: LogWorkoutProps) {
+function CreateExercise() {
   const [exercise, setExercise] = useState('');
   const [setReps, setSetReps] = useState(0);
   const [setWeight, setSetWeight] = useState(0);
   const [sets, setSets] = useState<Set[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = localStorage.getItem('userId');
+        setUserId(Number(decodedToken));
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+      }
+    }
+  }, []);
 
   const handleAddSet = () => {
     const result = addSet(sets, setWeight, setReps, setSets); 
@@ -17,7 +30,7 @@ function CreateExercise(props: LogWorkoutProps) {
   };
 
   const handleLogWorkout = async () => {
-    const result = await logWorkout(props.userId, exercise, sets, props.fetchPreviousRecords); 
+    const result = await logWorkout(userId, exercise, sets); 
     
     if (result.logged) {
       setExercise('');

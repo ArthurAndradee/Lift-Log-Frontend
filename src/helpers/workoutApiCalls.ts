@@ -31,12 +31,7 @@ export const addSet = (sets: Set[], setWeight: number, setReps: number, setSets:
   }
 };
 
-export const logWorkout = async (
-  userId: number | null,
-  exercise: string,
-  sets: Set[],
-  fetchPreviousRecords: (exercise: string) => void
-) => {
+export const logWorkout = async ( userId: number | null, exercise: string, sets: Set[]) => {
   if (userId && exercise) {
 
     if (!token) {
@@ -54,7 +49,6 @@ export const logWorkout = async (
       );
 
       alert('Workout logged');
-      fetchPreviousRecords(exercise); 
       return { logged: true };
     } catch (err) {
       console.error('Failed to log workout', err);
@@ -66,14 +60,9 @@ export const logWorkout = async (
   }
 };
 
-export const fetchPreviousRecords = async (
-  userId: number | null,
-  exercise: string,
-  setPreviousRecord: (records: WorkoutRecord[]) => void
-) => {
+export const fetchPreviousRecords = async ( userId: number | null, exercise: string, setPreviousRecord: (records: WorkoutRecord[]) => void) => {
   if (userId) {
     
-
     if (!token) {
       alert('User is not authenticated.');
       return;
@@ -95,8 +84,6 @@ export const fetchPreviousRecords = async (
 };
 
 export const deleteWorkout = async (userId: number | null, workoutId: number) => {
-  
-
   if (!token) {
     alert('User is not authenticated.');
     return false;
