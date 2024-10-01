@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { PreviousRecordsProps } from '../../utils/interfaces/component-props';
 import { WorkoutRecord } from '../../utils/interfaces/workout';
+import { fetchExercises, fetchPreviousRecords, deleteWorkout } from '../../helpers/workoutApiCalls';
 import './previous-workouts.css';
 
 function PreviousRecords(props: PreviousRecordsProps) {
@@ -13,51 +13,30 @@ function PreviousRecords(props: PreviousRecordsProps) {
 
   useEffect(() => {
     if (props.userId) {
-      axios.get(`http://localhost:5000/api/workouts/exercises`)
-        .then(response => {
-          setAvailableExercises(response.data.exercises);
-        })
-        .catch(err => {
-          console.error('Error fetching exercises:', err);
-        });
+      fetchExercises(setAvailableExercises);
     }
   }, [props.userId]);
-  
+
   useEffect(() => {
     const filtered = availableExercises.filter(exercise =>
       exercise.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredExercises(filtered);
   }, [searchQuery, availableExercises]);
-  
-  const fetchPreviousRecord = (exercise: string) => {
-    if (props.userId) {
-      axios.get(`http://localhost:5000/api/workouts/records/${props.userId}/${exercise}`)
-        .then(response => {
-          setPreviousRecord(response.data);
-        })
-        .catch(err => {
-          console.error('Error fetching previous records:', err);
-        });
-    }
+
+  const handleExerciseSelection = async (exercise: string) => {
+    await fetchPreviousRecords(props.userId, exercise, setPreviousRecord);
+    setActiveRecordExercise(exercise);
   };
 
-  const deleteWorkout = async (workoutId: number) => {
-    try {
-      await axios.delete('http://localhost:5000/api/workouts/delete', {
-        data: { userId: props.userId, workoutId }
-      });
+  const handleDeleteWorkout = async (workoutId: number) => {
+    const isDeleted = await deleteWorkout(props.userId, workoutId);
+    if (isDeleted) {
       alert('Workout deleted successfully');
-      fetchPreviousRecord(activeRecordExercise)
-    } catch (err) {
-      console.error('Error deleting workout:', err);
+      fetchPreviousRecords(props.userId, activeRecordExercise, setPreviousRecord);
+    } else {
       alert('Failed to delete workout');
     }
-  };
-
-  const handleExerciseSelection = (exercise: string) => {
-    fetchPreviousRecord(exercise);
-    setActiveRecordExercise(exercise)
   };
 
   return (
@@ -87,13 +66,13 @@ function PreviousRecords(props: PreviousRecordsProps) {
       {previousRecord.length > 0 ? (
         <ul>
           {previousRecord.map((record) => (
-            <li>
+            <li key={record.workoutId}>
               <strong>{record.exercise}</strong> - Série {record.setNumber}, 
               Peso: {record.weight} kgs, 
               {record.reps !== null ? ` Repetições: ${record.reps}` : ' Repetições: N/A'}
               <br />
               Registrado: {new Date(record.date).toLocaleString()}
-              <button onClick={() => deleteWorkout(record.workoutId)}>Deletar</button>
+              <button onClick={() => handleDeleteWorkout(record.workoutId)}>Deletar</button>
             </li>
           ))}
         </ul>
@@ -102,6 +81,6 @@ function PreviousRecords(props: PreviousRecordsProps) {
       )}
     </div>
   );
-};
+}
 
 export default PreviousRecords;
