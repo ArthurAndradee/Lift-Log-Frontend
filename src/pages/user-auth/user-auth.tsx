@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './user-auth.css';
 
@@ -8,12 +8,19 @@ function UserAuth() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/welcome');
+    }
+  }, [navigate]);
+
   const handleLogin = async () => {
     try {
       const res = await axios.post('http://localhost:5000/api/users/login', { username, password });
-
+      
       localStorage.setItem('token', res.data.token);
-      console.log(res.data.token)
+      console.log(res.data.token);
 
       navigate('/welcome');
     } catch (err) {
