@@ -40,8 +40,6 @@ function LogExercise(props: LogWorkoutProps) {
   
     const logWorkout = async () => {
       const userId = props.userId;
-      console.log(exercise)
-      console.log(userId)
       if (userId && exercise) {
         try {
           await axios.post('http://localhost:5000/api/workouts/log', { userId, exercise, sets });
