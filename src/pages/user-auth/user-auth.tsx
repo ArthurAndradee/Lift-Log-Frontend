@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { UserAuthProps } from '../../utils/interfaces/component-props';
 import { useNavigate } from 'react-router-dom';
-import './user-auth.css'
+import './user-auth.css';
 
 function UserAuth(props: UserAuthProps) {
   const [username, setUsername] = useState('');
@@ -12,10 +12,15 @@ function UserAuth(props: UserAuthProps) {
   const handleLogin = async () => {
     try {
       const res = await axios.post('http://localhost:5000/api/users/login', { username, password });
+
       props.setUserId(res.data.userId);
-      navigate('/welcome')
+
+      localStorage.setItem('token', res.data.token);
+      console.log(res.data.token)
+
+      navigate('/welcome');
     } catch (err) {
-      console.error('Login failed');
+      console.error('Login failed:', err);
     }
   };
 
@@ -24,7 +29,7 @@ function UserAuth(props: UserAuthProps) {
       await axios.post('http://localhost:5000/api/users/register', { username, password });
       alert('Registered successfully');
     } catch (err) {
-      console.error('Registration failed');
+      console.error('Registration failed:', err);
     }
   };
 
@@ -47,6 +52,6 @@ function UserAuth(props: UserAuthProps) {
       <button onClick={handleRegister}>Criar conta</button>
     </div>
   );
-};
+}
 
 export default UserAuth;
