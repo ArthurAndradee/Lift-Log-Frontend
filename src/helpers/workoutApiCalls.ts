@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { Set, WorkoutRecord } from '../utils/interfaces/workout';
 
-const token = localStorage.getItem('token'); 
+const getToken = () => {
+  return localStorage.getItem('token');
+};
 
 export const fetchExercises = async (setAvailableExercises: (exercises: string[]) => void) => {
+  const token = getToken(); 
+
   try {
     const response = await axios.get('http://localhost:5000/api/workouts/exercises', {
       headers: {
@@ -31,20 +35,23 @@ export const addSet = (sets: Set[], setWeight: number, setReps: number, setSets:
   }
 };
 
-export const logWorkout = async ( userId: number | null, exercise: string, sets: Set[]) => {
-  if (userId && exercise) {
-    if (!token) {
-      alert('User is not authenticated.');
-      return { logged: false };
-    }
+export const logWorkout = async (userId: number | null, exercise: string, sets: Set[]) => {
+  const token = getToken();
 
+  if (!token) {
+    alert('User is not authenticated.');
+    return { logged: false };
+  }
+
+  if (userId && exercise) {
     try {
       await axios.post(
         'http://localhost:5000/api/workouts/log',
         { userId, exercise, sets },{
           headers: {
             Authorization: `Bearer ${token}`, 
-        }}
+          },
+        }
       );
 
       alert('Workout logged');
@@ -59,14 +66,15 @@ export const logWorkout = async ( userId: number | null, exercise: string, sets:
   }
 };
 
-export const fetchPreviousRecords = async ( userId: number | null, exercise: string, setPreviousRecord: (records: WorkoutRecord[]) => void) => {
-  if (userId) {
-    
-    if (!token) {
-      alert('User is not authenticated.');
-      return;
-    }
+export const fetchPreviousRecords = async (userId: number | null, exercise: string, setPreviousRecord: (records: WorkoutRecord[]) => void) => {
+  const token = getToken();
 
+  if (!token) {
+    alert('User is not authenticated.');
+    return;
+  }
+
+  if (userId) {
     try {
       setPreviousRecord([]); 
       const response = await axios.get(`http://localhost:5000/api/workouts/records/${userId}/${exercise}`, {
@@ -83,6 +91,8 @@ export const fetchPreviousRecords = async ( userId: number | null, exercise: str
 };
 
 export const deleteWorkout = async (userId: number | null, workoutId: number) => {
+  const token = getToken(); 
+
   if (!token) {
     alert('User is not authenticated.');
     return false;
